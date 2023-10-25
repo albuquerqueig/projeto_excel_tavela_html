@@ -1,0 +1,45 @@
+* {
+    font-family: 'Courier New', Courier, monospace;
+}
+
+/* Estilos para o header */
+header {
+    background-color: black;
+    color: white;
+    padding: 0%;
+    height: 4rem;
+}
+
+/* Estilos para a tabela */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+  
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+  
+th {
+    background-color: black;
+    color: white;
+}
+  
+/* Linhas alternadas com cores de fundo diferentes */
+tr:nth-child(even) {
+    background-color: #dddddd; /* Cinza claro */
+}
+  
+tr:nth-child(odd) {
+    background-color: #989898; /* Cinza escuro */
+    color: white; /* Texto branco para contrastar com o fundo escuro */
+}
+  
+/* Estilos para o gráfico de rosca */
+#myChart {
+    width: 100px;
+    height: 100px;
+    margin-top: 20px;
+}

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Relatório de Pedidos</title>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <header>Relatório de Pedidos</header>
+    <input type="file" id="fileInput" />
+    <div id="tableContainer"></div>
+    <canvas id="myChart"></canvas>
+
+    <script>
+    document.getElementById('fileInput').addEventListener('change', handleFileSelect, false);
+
+    function handleFileSelect(event) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+
+      reader.onload = function (e) {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+
+        // Convert XLSX to JSON
+        const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+        // Extract required columns (assuming columns A to E)
+        const extractedData = jsonData.map(row => [row[0], row[1], row[2], row[3], row[4]]);
+
+        // Display data in HTML table
+        const table = '<table border="1">' +
+                      extractedData.map(row => '<tr>' + row.map(cell => '<td>' + cell + '</td>').join('') + '</tr>').join('') +
+                      '</table>';
+        document.getElementById('tableContainer').innerHTML = table;
+
+        // Extract data for the chart (assuming column D for faturamento)
+        const faturamentoColumn = jsonData.map(row => row[3]); // Coluna D (quarta coluna) para faturamento
+        const faturados = faturamentoColumn.filter(value => value === 'Faturado').length;
+        const naoFaturados = faturamentoColumn.length - faturados;
+
+        // Create chart
+        const ctx = document.getElementById('myChart').getContext('2d');
+        const myChart = new Chart(ctx, {
+          type: 'doughnut',
+          data: {
+            labels: ['Faturados', 'Não Faturados'],
+            datasets: [{
+              data: [faturados, naoFaturados],
+              backgroundColor: ['#00d64b', '#ff0000']
+            }]
+          }
+        });
+      };
+
+      reader.readAsArrayBuffer(file);
+    }
+  </script>
+</body>
+</html>
